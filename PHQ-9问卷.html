@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>心屿 · 抑郁自评 (PHQ-9)</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: linear-gradient(145deg, #e6f0fa 0%, #dae6f2 100%);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px 16px;
+    }
+
+    .paper {
+      max-width: 880px;
+      width: 100%;
+      background-color: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: 36px;
+      box-shadow: 0 25px 50px -10px rgba(0, 40, 80, 0.25), 0 0 0 1px rgba(156, 192, 229, 0.3);
+      padding: 32px 28px;
+      transition: all 0.2s ease;
+    }
+
+    h1 {
+      font-size: 2.1rem;
+      font-weight: 500;
+      letter-spacing: -0.02em;
+      color: #1d3b5c;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 4px;
+    }
+
+    h1 span {
+      background: #b3d0e7;
+      font-size: 1rem;
+      font-weight: 400;
+      padding: 4px 14px;
+      border-radius: 40px;
+      color: #1d3b5c;
+      letter-spacing: 0.3px;
+      margin-left: 8px;
+    }
+
+    .subhead {
+      font-size: 1rem;
+      color: #3f5e7c;
+      border-left: 4px solid #7fa9c9;
+      padding-left: 18px;
+      margin: 12px 0 28px 0;
+      line-height: 1.5;
+      background: rgba(127, 169, 201, 0.08);
+      border-radius: 0 12px 12px 0;
+      padding: 10px 18px;
+    }
+
+    .reminder {
+      background: #fef9ea;
+      border-radius: 24px;
+      padding: 12px 20px;
+      margin-bottom: 32px;
+      font-size: 0.94rem;
+      color: #6d5a3c;
+      border: 1px solid #ffe5b4;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px 12px;
+    }
+
+    .reminder b {
+      font-weight: 600;
+      color: #a65336;
+    }
+
+    .option-scale {
+      display: inline-flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-left: auto;
+    }
+
+    .scale-chip {
+      background: #ffffffcc;
+      border-radius: 30px;
+      padding: 4px 12px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: #2d4b6c;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    }
+
+    /* 问题卡片 */
+    .question-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      margin-bottom: 30px;
+    }
+
+    .q-item {
+      background: #ffffffd9;
+      backdrop-filter: blur(4px);
+      border-radius: 28px;
+      padding: 18px 22px;
+      box-shadow: 0 6px 12px -6px rgba(32, 60, 90, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      transition: 0.15s;
+    }
+
+    .q-item:hover {
+      background: #fffffffa;
+      border-color: #b9d2e9;
+    }
+
+    .q-text {
+      font-size: 1.12rem;
+      font-weight: 450;
+      color: #153e5a;
+      margin-bottom: 16px;
+      padding-right: 5px;
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    .q-num {
+      background: #dde9f5;
+      border-radius: 50px;
+      width: 28px;
+      height: 28px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: #1b4b72;
+      flex-shrink: 0;
+    }
+
+    /* 选项采用grid自适应 */
+    .option-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+
+    .option-row label {
+      background: #f2f8ff;
+      border-radius: 40px;
+      padding: 10px 8px;
+      text-align: center;
+      font-size: 0.92rem;
+      font-weight: 430;
+      color: #1d4468;
+      border: 1px solid #cbddee;
+      transition: all 0.15s;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      line-height: 1.2;
+      user-select: none;
+    }
+
+    .option-row label:hover {
+      background: #e1effb;
+      border-color: #8eb9db;
+      transform: translateY(-1px);
+    }
+
+    .option-row input[type="radio"] {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      border: 2px solid #8aa9c7;
+      border-radius: 50%;
+      margin: 0;
+      background: white;
+      transition: 0.1s;
+    }
+
+    .option-row input[type="radio"]:checked {
+      border: 6px solid #3875a0;
+      background: white;
+    }
+
+    .option-row input[type="radio"]:focus-visible {
+      outline: 2px solid #3875a0;
+      outline-offset: 2px;
+    }
+
+    /* 按钮区 */
+    .action-bar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 18px;
+      margin: 28px 0 20px;
+    }
+
+    .btn {
+      border: none;
+      background: white;
+      padding: 16px 42px;
+      border-radius: 60px;
+      font-size: 1.2rem;
+      font-weight: 520;
+      color: #1d3b5c;
+      box-shadow: 0 8px 18px -8px rgba(32, 70, 110, 0.2);
+      border: 1px solid rgba(255,255,255,0.7);
+      backdrop-filter: blur(5px);
+      cursor: pointer;
+      transition: 0.15s;
+      min-width: 200px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .btn-primary {
+      background: #3875a0;
+      color: white;
+      border: none;
+      box-shadow: 0 12px 22px -8px #3875a0b0;
+    }
+
+    .btn-primary:hover {
+      background: #2f6288;
+      transform: scale(1.02);
+    }
+
+    .btn-secondary:hover {
+      background: #edf5fe;
+      border-color: #94b7d6;
+    }
+
+    /* 结果卡 */
+    .result-card {
+      margin-top: 30px;
+      background: #ffffffd9;
+      backdrop-filter: blur(4px);
+      border-radius: 34px;
+      padding: 28px 26px;
+      border: 1px solid #d4e2f0;
+      box-shadow: inset 0 1px 4px #ffffff, 0 10px 20px -15px #1d3b5c;
+    }
+
+    .score-board {
+      font-size: 2.4rem;
+      font-weight: 350;
+      color: #1b3f5c;
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 15px;
+    }
+
+    .score-board strong {
+      font-weight: 600;
+      font-size: 3rem;
+      color: #2f6288;
+    }
+
+    .interpret {
+      font-size: 1.2rem;
+      padding: 8px 0 4px;
+      border-bottom: 2px dotted #b2cde0;
+      margin-bottom: 16px;
+      color: #1c4b6e;
+    }
+
+    .warning-note {
+      background: #ffecdd;
+      border-radius: 26px;
+      padding: 20px 22px;
+      color: #a0321c;
+      border-left: 5px solid #cc503e;
+      margin-top: 16px;
+      font-size: 1.02rem;
+      line-height: 1.5;
+    }
+
+    .hotline {
+      font-weight: 600;
+      background: #ffffffb0;
+      border-radius: 40px;
+      padding: 12px 18px;
+      margin-top: 18px;
+      font-size: 1rem;
+      color: #2a577b;
+    }
+
+    .footnote {
+      margin-top: 30px;
+      font-size: 0.8rem;
+      color: #4f6f8a;
+      text-align: center;
+      border-top: 1px solid #cbdeee;
+      padding-top: 18px;
+    }
+
+    /* 小于600px 选项两列 */
+    @media (max-width: 600px) {
+      .paper { padding: 22px 16px; }
+      h1 { font-size: 1.8rem; }
+      .option-row { grid-template-columns: repeat(2, 1fr); }
+      .btn { min-width: 160px; padding: 14px 24px; }
+    }
+
+    /* 小于400px 选项文字略小 */
+    @media (max-width: 400px) {
+      .option-row label { font-size: 0.8rem; padding: 8px 4px; }
+      .q-text { font-size: 1rem; }
+    }
+
+    /* 重置默认间距 */
+    .option-row input[type="radio"] {
+      flex-shrink: 0;
+    }
+  </style>
+  <!-- 使用Inter字体 (轻微优化) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="paper">
+    <h1>
+      🌿 抑郁自评问卷
+      <span>PHQ-9</span>
+    </h1>
+    <div class="subhead">
+      根据过去两周内的实际情况，选择最符合您状态的选项。<br>每一项都请回答，这能帮助您更清晰地了解自己的情绪健康。
+    </div>
+
+    <!-- 快速提醒 + 程度标签 -->
+    <div class="reminder">
+      <span style="display: flex; align-items: center; gap: 4px;">📋 <b>0</b> 完全不会 &nbsp; <b>1</b> 有几天 &nbsp; <b>2</b> 一半以上 &nbsp; <b>3</b> 几乎每天</span>
+      <span class="option-scale">每项必选，结果仅供参考，非诊断</span>
+    </div>
+
+    <!-- 问题动态插入位置 -->
+    <div id="questionsContainer" class="question-grid"></div>
+
+    <!-- 操作按钮组 -->
+    <div class="action-bar">
+      <button class="btn btn-secondary" id="resetBtn">↻ 重新选择</button>
+      <button class="btn btn-primary" id="submitBtn">✨ 查看结果</button>
+    </div>
+
+    <!-- 结果显示卡片 -->
+    <div id="resultCard" class="result-card">
+      <div style="color: #4d6f8b; text-align: center; padding: 10px 0;">点击“查看结果”获得测评反馈</div>
+    </div>
+
+    <div class="footnote">
+      ⚠️ 本测评使用患者健康问卷(PHQ-9)，仅供个人心理自查参考，不能替代专业诊断。<br>
+      如有持续情绪困扰或遇紧急情况，请立刻寻求心理援助。
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      // ---------- PHQ-9 问题数组 ----------
+      const questions = [
+        "做事时提不起劲或没有兴趣",
+        "感到心情低落、沮丧或绝望",
+        "入睡困难、睡不安稳或睡眠过多",
+        "感觉疲倦或没有活力",
+        "食欲不振或吃太多",
+        "觉得自己很糟——或觉得自己很失败，或让自己或家人失望",
+        "难以专注事物，例如阅读报纸或看电视",
+        "动作或说话速度缓慢到别人可察觉，或正好相反——烦躁或坐立不安的程度更胜于平常",
+        "有不如死掉或用某种方式伤害自己的念头"
+      ];
+
+      // 选项文字 (值与标签对应)
+      const options = [
+        { value: 0, label: '0 完全不会' },
+        { value: 1, label: '1 有几天' },
+        { value: 2, label: '2 一半以上' },
+        { value: 3, label: '3 几乎每天' }
+      ];
+
+      // 获取容器
+      const container = document.getElementById('questionsContainer');
+      const resultDiv = document.getElementById('resultCard');
+      const resetBtn = document.getElementById('resetBtn');
+      const submitBtn = document.getElementById('submitBtn');
+
+      // ---------- 渲染全部问题 (默认所有选项未选中) ----------
+      function renderQuestions() {
+        let htmlStr = '';
+        for (let i = 0; i < questions.length; i++) {
+          const qNum = i + 1;
+          const questionText = questions[i];
+          
+          // 生成四个radio选项
+          let optionsHtml = '';
+          options.forEach(opt => {
+            optionsHtml += `
+              <label>
+                <input type="radio" name="q${qNum}" value="${opt.value}">
+                <span>${opt.label}</span>
+              </label>
+            `;
+          });
+
+          // 单个问题卡片
+          htmlStr += `
+            <div class="q-item">
+              <div class="q-text">
+                <span class="q-num">${qNum}</span>
+                <span>${questionText}</span>
+              </div>
+              <div class="option-row">
+                ${optionsHtml}
+              </div>
+            </div>
+          `;
+        }
+        container.innerHTML = htmlStr;
+      }
+
+      // 初次加载渲染
+      renderQuestions();
+
+      // ---------- 重置：清除所有选中，清空结果区 ----------
+      function resetAllSelections() {
+        // 获取所有radio并取消选中
+        const allRadios = document.querySelectorAll('input[type="radio"]');
+        allRadios.forEach(radio => radio.checked = false);
+        
+        // 恢复结果卡占位符
+        resultDiv.innerHTML = `<div style="color: #4d6f8b; text-align: center; padding: 10px 0;">点击“查看结果”获得测评反馈</div>`;
+      }
+
+      // ---------- 提交计算总分并显示结果 ----------
+      function calculateAndShow() {
+        let totalScore = 0;
+        let scoresPerQuestion = []; // 存储每题得分 (索引0对应第1题)
+        let allAnswered = true;
+        let missingIndex = -1;
+
+        // 遍历9个问题组 (q1 ~ q9)
+        for (let i = 1; i <= 9; i++) {
+          const selected = document.querySelector(`input[name="q${i}"]:checked`);
+          if (!selected) {
+            allAnswered = false;
+            missingIndex = i;
+            break;
+          }
+          const val = parseInt(selected.value, 10);
+          scoresPerQuestion.push(val);
+          totalScore += val;
+        }
+
+        // 如果有未答题目，提示并中断
+        if (!allAnswered) {
+          alert(`第 ${missingIndex} 题尚未回答，请完成后再次提交。`);
+          return;
+        }
+
+        // 获取第9题得分 (索引8)
+        const q9Score = scoresPerQuestion[8];  // 第9题对应数组最后一项
+
+        // 根据总分划分等级 (PHQ-9 常规分级)
+        let level = '';
+        let suggestion = '';
+
+        if (totalScore <= 4) {
+          level = '无抑郁或极轻微';
+          suggestion = '您目前情绪状态良好，请保持健康作息与社交。偶尔的波动是正常的。';
+        } else if (totalScore <= 9) {
+          level = '轻度抑郁';
+          suggestion = '可能有轻度情绪困扰，建议通过运动、倾诉调节。如果持续两周以上，可考虑心理咨询。';
+        } else if (totalScore <= 14) {
+          level = '中度抑郁';
+          suggestion = '您正经历明显情绪困扰，对生活可能已产生影响。鼓励您寻求专业支持，或与信任的人谈谈。';
+        } else if (totalScore <= 19) {
+          level = '中重度抑郁';
+          suggestion = '情绪困扰已较严重，请务必重视。强烈建议您尽快前往心理科或精神科就诊。';
+        } else {
+          level = '重度抑郁';
+          suggestion = '您正承受剧烈心理痛苦，请立即寻求专业帮助，不要独自面对。可联系心理危机干预机构。';
+        }
+
+        // 构建结果HTML
+        let resultHtml = `
+          <div class="score-board">
+            <span>总分</span>
+            <strong>${totalScore}</strong>
+            <span style="font-size:1.2rem;">/ 27</span>
+          </div>
+          <div class="interpret">
+            ${level} · 评估参考
+          </div>
+          <div style="font-size:1rem; margin: 10px 0 5px; line-height:1.5; color:#25587a;">
+            ${suggestion}
+          </div>
+        `;
+
+        // 特别关注：第9题 (自伤念头) 预警
+        if (q9Score > 0) {
+          resultHtml += `
+            <div class="warning-note">
+              ⚠️ 您在第9题（关于自杀或伤害自己的念头）选择了“${q9Score === 1 ? '有几天' : (q9Score === 2 ? '一半以上天数' : '几乎每天')}”。<br>
+              <strong>这是非常重要的信号：</strong>请不要再独自承受，立即向亲友倾诉，或拨打心理援助热线。生命珍贵，值得被看见。
+            </div>
+          `;
+        }
+
+        // 通用援助热线 (任何时候都显示，以提供支持)
+        resultHtml += `
+          <div class="hotline">
+            📞 需要即时帮助？<br>
+            全国希望24热线：400-161-9995 (24小时)<br>
+            北京心理危机研究与干预中心：010-82951332<br>
+            您也可以直接前往附近精神卫生中心或联系紧急联系人。
+          </div>
+        `;
+
+        // 更新结果卡片
+        resultDiv.innerHTML = resultHtml;
+      }
+
+      // ---------- 绑定事件 ----------
+      resetBtn.addEventListener('click', resetAllSelections);
+      submitBtn.addEventListener('click', calculateAndShow);
+
+      // 可选：如果用户重新选择后想重置结果？但为了体验，提交后不清除结果。完全ok。
+      // 额外细节：如果用户修改答案，结果仍然显示上次，但点击提交会重新计算覆盖，符合预期。
+
+      // 若用户通过重置，清空结果已经实现。
+      // 额外优化：如果有极端情况，确保重置时也清空可能遗留的警告。
+    })();
+  </script>
+
+  <!-- 简单的无干扰备注：确保所有radio组不被默认选中 -->
+</body>
+</html>
